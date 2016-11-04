@@ -16,7 +16,7 @@ import (
 func hash(data []byte) (uint64, error) {
 	buff := bytes.NewBuffer(data)
 
-	img, format, err := image.Decode(buff)
+	img, _, err := image.Decode(buff)
 	if err != nil {
 		return 0, err
 	}

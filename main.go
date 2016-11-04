@@ -35,7 +35,7 @@ func main() {
 		dist := imghash.Distance(lastHash, currHash)
 
 		if dist > 10 {
-			fmt.Println("detected a distance:", dist)
+			fmt.Println(time.Now(), "detected a distance:", dist)
 			if err = ioutil.WriteFile("/tmp/"+now(), lastImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
 			}
