@@ -12,6 +12,7 @@ import (
 var env struct {
 	auth string
 	url  string
+	out  string
 }
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 
 	env.auth = os.Getenv("AUTH")
 	env.url = os.Getenv("URL")
+	env.out = os.Getenv("OUTPUT")
 
 	// ----------------------
 
@@ -36,7 +38,7 @@ func main() {
 
 		if dist > 10 {
 			fmt.Println(time.Now(), "detected a distance:", dist)
-			if err = ioutil.WriteFile("/tmp/"+now(), lastImg, 0644); err != nil {
+			if err = ioutil.WriteFile(env.out+now(), lastImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
 			}
 		}
