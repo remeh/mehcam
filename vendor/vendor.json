@@ -1,6 +1,13 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"checksumSHA1": "+/wjXHgD0HOn6KLsSB33LtfQuAc=",
+			"path": "github.com/jteeuwen/imghash",
+			"revision": "6afea89d4c0e16db11fbe1411ebac8df543f41a7",
+			"revisionTime": "2015-10-18T23:57:33Z"
+		}
+	],
 	"rootPath": "github.com/remeh/mehcam"
 }
