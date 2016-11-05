@@ -10,17 +10,15 @@ import (
 )
 
 var env struct {
-	auth string
-	url  string
-	out  string
+	auth     string
+	url      string
+	out      string
+	duration time.Duration
 }
 
 func main() {
-	// read environment var
 
-	env.auth = os.Getenv("AUTH")
-	env.url = os.Getenv("URL")
-	env.out = os.Getenv("OUTPUT")
+	readParams()
 
 	// ----------------------
 
@@ -28,7 +26,9 @@ func main() {
 	var lastImg, currImg []byte
 	var err error
 
-	for {
+	ticker := time.NewTicker(env.duration)
+
+	for t := range ticker.C {
 		currHash, currImg, err = currentHash()
 		if err != nil {
 			fmt.Println("can't retrieve hash:", err)
@@ -38,13 +38,26 @@ func main() {
 
 		if dist > 10 {
 			fmt.Println(time.Now(), "detected a distance:", dist)
-			if err = ioutil.WriteFile(env.out+now(), lastImg, 0644); err != nil {
+			if err = ioutil.WriteFile(env.out+now(t), lastImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
 			}
 		}
 
 		lastImg, lastHash = currImg, currHash
-		time.Sleep(time.Second * 1)
+	}
+}
+
+func readParams() {
+	env.auth = os.Getenv("AUTH")
+	env.url = os.Getenv("URL")
+	env.out = os.Getenv("OUTPUT")
+	if env.out[len(env.out)-1] != '/' {
+		env.out += "/"
+	}
+
+	var err error
+	if env.duration, err = time.ParseDuration(os.Getenv("DURATION")); err != nil {
+		env.duration = time.Second
 	}
 }
 
@@ -61,6 +74,6 @@ func currentHash() (uint64, []byte, error) {
 	}
 }
 
-func now() string {
-	return time.Now().Format("2006-01-02-15-04-05.jpg")
+func now(t time.Time) string {
+	return t.Format("2006-01-02_15-04-05.jpg")
 }
