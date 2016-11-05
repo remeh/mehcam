@@ -85,7 +85,7 @@ func readParams() error {
 		env.duration = time.Second
 	}
 
-	if env.dist, err = strconv.ParseUint(os.Getenv(""), 10, 64); err != nil {
+	if env.dist, err = strconv.ParseUint(os.Getenv("DIST"), 10, 64); err != nil {
 		fmt.Println("warning: can't read DIST env var. Fallback on 10")
 		env.dist = 10
 	}
