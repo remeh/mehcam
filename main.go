@@ -51,7 +51,7 @@ func readParams() {
 	env.auth = os.Getenv("AUTH")
 	env.url = os.Getenv("URL")
 	env.out = os.Getenv("OUTPUT")
-	if env.out[len(env.out)-1] != '/' {
+	if len(env.out) > 0 && env.out[len(env.out)-1] != '/' {
 		env.out += "/"
 	}
 
