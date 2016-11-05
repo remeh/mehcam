@@ -46,9 +46,9 @@ func main() {
 
 		// compute the distance between previous image and the current one
 		dist := imghash.Distance(lastHash, currHash)
-		if dist > env.dist {
+		if dist > env.dist && lastImg != nil {
 			fmt.Println(time.Now(), "detected a distance:", dist)
-			if err = ioutil.WriteFile(env.out+filename(t), lastImg, 0644); err != nil {
+			if err = ioutil.WriteFile(env.out+filename(t), currImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
 			}
 		}
