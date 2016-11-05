@@ -48,7 +48,5 @@ func hash(data []byte) (uint64, error) {
 		return 0, err
 	}
 
-	avg := imghash.Average(img)
-
-	return avg, nil
+	return imghash.Average(img), nil
 }
