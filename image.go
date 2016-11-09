@@ -23,7 +23,7 @@ func get() ([]byte, error) {
 	}
 
 	// Basic Authentication
-	req.SetBasicAuth("admin", "dontworryitsnotmyrealpassword")
+	req.SetBasicAuth(env.auth, env.password)
 
 	var resp *http.Response
 	if resp, err = http.DefaultClient.Do(req); err != nil {

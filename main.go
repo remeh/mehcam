@@ -14,6 +14,7 @@ import (
 // execution of the app.
 var env struct {
 	auth     string
+	password string
 	url      string
 	out      string
 	duration time.Duration
@@ -65,6 +66,7 @@ func readParams() error {
 	// authorization and webserver url
 
 	env.auth = os.Getenv("AUTH")
+	env.password = os.Getenv("PASSWORD")
 	env.url = os.Getenv("URL")
 
 	if len(env.auth) == 0 || len(env.url) == 0 {
