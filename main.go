@@ -13,7 +13,7 @@ import (
 // env contains the configuration for the
 // execution of the app.
 var env struct {
-	auth     string
+	login    string
 	password string
 	url      string
 	out      string
@@ -65,11 +65,11 @@ func readParams() error {
 
 	// authorization and webserver url
 
-	env.auth = os.Getenv("AUTH")
+	env.login = os.Getenv("LOGIN")
 	env.password = os.Getenv("PASSWORD")
 	env.url = os.Getenv("URL")
 
-	if len(env.auth) == 0 || len(env.url) == 0 {
+	if len(env.login) == 0 || len(env.url) == 0 {
 		return fmt.Errorf("no url or no authorization info provided.")
 	}
 
