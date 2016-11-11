@@ -97,6 +97,7 @@ func readParams() error {
 	env.url = os.Getenv("URL")
 	env.yo_api_key = os.Getenv("YO_API_KEY")
 	env.yo = os.Getenv("YO")
+	env.addr = os.Getenv("ADDR")
 
 	if len(env.login) == 0 || len(env.url) == 0 {
 		return fmt.Errorf("no url or no authorization info provided.")
