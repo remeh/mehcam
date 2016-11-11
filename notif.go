@@ -18,8 +18,8 @@ func send(filename string) error {
 	}
 
 	values := url.Values{}
-	values.Add("api_token", env.yo)
-	values.Add("username", env.yo_username)
+	values.Add("api_token", env.yo_api_key)
+	values.Add("username", env.yo)
 	values.Add("link", "https://remy.io") // TODO(remy):
 
 	resp, err := http.PostForm(YoApiUrl, values)

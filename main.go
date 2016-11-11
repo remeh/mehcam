@@ -25,9 +25,11 @@ var env struct {
 	// minimum distance to consider motion
 	dist uint64
 	// yo api key
-	yo string
+	yo_api_key string
 	// yo username to push
-	yo_username string
+	yo string
+	// addr to listen on
+	addr string
 }
 
 func main() {
@@ -44,6 +46,11 @@ func main() {
 	var err error
 
 	ticker := time.NewTicker(env.duration)
+
+	// start the web server
+	if len(env.addr) > 0 {
+		go serve()
+	}
 
 	// timed infinite loop
 	for t := range ticker.C {
@@ -62,9 +69,12 @@ func main() {
 			if err = ioutil.WriteFile(env.out+filename(t), currImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
 			}
+
 			// send notification
-			if err = send(env.out + filename(t)); err != nil {
-				fmt.Println("during push notification:", err)
+			if len(env.yo_api_key) != 0 && len(env.addr) != 0 {
+				if err = send(env.out + filename(t)); err != nil {
+					fmt.Println("during push notification:", err)
+				}
 			}
 		}
 
@@ -82,15 +92,15 @@ func readParams() error {
 	env.login = os.Getenv("LOGIN")
 	env.password = os.Getenv("PASSWORD")
 	env.url = os.Getenv("URL")
+	env.yo_api_key = os.Getenv("YO_API_KEY")
 	env.yo = os.Getenv("YO")
-	env.yo_username = os.Getenv("YO_USERNAME")
 
 	if len(env.login) == 0 || len(env.url) == 0 {
 		return fmt.Errorf("no url or no authorization info provided.")
 	}
 
-	if len(env.yo) == 0 || len(env.yo_username) == 0 {
-		fmt.Println("no Yo token or Yo username, notification disabled.")
+	if len(env.yo_api_key) == 0 || len(env.yo) == 0 || len(env.addr) {
+		fmt.Println("no Yo API Token, Yo username or addr to listen to, notification disabled.")
 	}
 
 	// output directory
