@@ -13,12 +13,21 @@ import (
 // env contains the configuration for the
 // execution of the app.
 var env struct {
+	// camera auth
 	login    string
 	password string
-	url      string
-	out      string
+	// camera url
+	url string
+	// output directory
+	out string
+	// fetch frequency
 	duration time.Duration
-	dist     uint64
+	// minimum distance to consider motion
+	dist uint64
+	// yo api key
+	yo string
+	// yo username to push
+	yo_username string
 }
 
 func main() {
@@ -48,9 +57,14 @@ func main() {
 		// compute the distance between previous image and the current one
 		dist := imghash.Distance(lastHash, currHash)
 		if dist > env.dist && lastImg != nil {
+			// write the file
 			fmt.Println(time.Now(), "detected a distance:", dist)
 			if err = ioutil.WriteFile(env.out+filename(t), currImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
+			}
+			// send notification
+			if err = send(env.out + filename(t)); err != nil {
+				fmt.Println("during push notification:", err)
 			}
 		}
 
@@ -68,9 +82,15 @@ func readParams() error {
 	env.login = os.Getenv("LOGIN")
 	env.password = os.Getenv("PASSWORD")
 	env.url = os.Getenv("URL")
+	env.yo = os.Getenv("YO")
+	env.yo_username = os.Getenv("YO_USERNAME")
 
 	if len(env.login) == 0 || len(env.url) == 0 {
 		return fmt.Errorf("no url or no authorization info provided.")
+	}
+
+	if len(env.yo) == 0 || len(env.yo_username) == 0 {
+		fmt.Println("no Yo token or Yo username, notification disabled.")
 	}
 
 	// output directory
