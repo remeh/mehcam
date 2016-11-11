@@ -11,16 +11,18 @@ const (
 )
 
 // send uses the JustYo API to send
-// a push notification to my phone.
-func send(filename string) error {
-	if len(filename) == 0 {
+// a push notification to my phone
+// with a link to the serve image using
+// its ID.
+func send(id string) error {
+	if len(id) == 0 {
 		return nil
 	}
 
 	values := url.Values{}
 	values.Add("api_token", env.yo_api_key)
 	values.Add("username", env.yo)
-	values.Add("link", "https://remy.io") // TODO(remy):
+	values.Add("link", "http://"+env.addr+"/?f="+id) // TODO(remy):
 
 	resp, err := http.PostForm(YoApiUrl, values)
 	if err != nil {

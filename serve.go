@@ -30,7 +30,7 @@ func serve() {
 	log.Fatal(s.ListenAndServe())
 }
 
-func addPic(filename string) {
+func addPic(filename string) string {
 	// generate an random ID
 	id := make([]byte, 32)
 	for i := range id {
@@ -38,7 +38,9 @@ func addPic(filename string) {
 	}
 
 	// we'll now serve this file using this newly generated ID
-	mapping[string(id)] = filename
+	sid := string(id)
+	mapping[sid] = filename
+	return sid
 }
 
 // ----------------------

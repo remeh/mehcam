@@ -64,15 +64,18 @@ func main() {
 		// compute the distance between previous image and the current one
 		dist := imghash.Distance(lastHash, currHash)
 		if dist > env.dist && lastImg != nil {
+			filepath := env.out + filename(t)
+
 			// write the file
 			fmt.Println(time.Now(), "detected a distance:", dist)
-			if err = ioutil.WriteFile(env.out+filename(t), currImg, 0644); err != nil {
+			if err = ioutil.WriteFile(filepath, currImg, 0644); err != nil {
 				fmt.Println("while writing file:", err)
 			}
 
 			// send notification
-			if len(env.yo_api_key) != 0 && len(env.addr) != 0 {
-				if err = send(env.out + filename(t)); err != nil {
+			if len(env.yo_api_key) != 0 && len(env.yo) != 0 && len(env.addr) != 0 {
+				id := addPic(filepath)
+				if err = send(id); err != nil {
 					fmt.Println("during push notification:", err)
 				}
 			}
@@ -99,8 +102,8 @@ func readParams() error {
 		return fmt.Errorf("no url or no authorization info provided.")
 	}
 
-	if len(env.yo_api_key) == 0 || len(env.yo) == 0 || len(env.addr) {
-		fmt.Println("no Yo API Token, Yo username or addr to listen to, notification disabled.")
+	if len(env.yo_api_key) == 0 || len(env.yo) == 0 || len(env.addr) == 0 {
+		fmt.Println("no Yo configuration or addr to listen to, notification disabled")
 	}
 
 	// output directory
