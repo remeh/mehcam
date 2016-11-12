@@ -29,13 +29,13 @@ var env struct {
 	yo_api_key string
 	// yo username to push
 	yo string
-	// addr to listen on
+	// addr to listen on. E.g. ':8080'
 	addr string
 }
 
 func main() {
 
-	if err := readParams(); err != nil {
+	if err := readConfig(); err != nil {
 		log.Println("error: can't read mandatory params:", err)
 		os.Exit(1)
 	}
@@ -87,8 +87,8 @@ func main() {
 	}
 }
 
-// readParams reads in the execution environment for some configuration
-func readParams() error {
+// readConfig reads in the execution environment for some configuration
+func readConfig() error {
 	var err error
 
 	// authorization and webserver url
