@@ -31,7 +31,7 @@ func serve() {
 }
 
 func addPic(filename string) string {
-	// generate an random ID
+	// generate a random ID
 	id := make([]byte, 64)
 	for i := range id {
 		id[i] = idsChar[rand.Intn(len(idsChar))]
