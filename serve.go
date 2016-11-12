@@ -23,11 +23,8 @@ func serve() {
 	rand.Seed(time.Now().UnixNano())
 
 	// create the http server
-	s := &http.Server{
-		Addr:    config.Addr,
-		Handler: picHandler{},
-	}
-	log.Fatal(s.ListenAndServe())
+	http.Handle("/", picHandler{})
+	log.Fatal(http.ListenAndServe(config.Addr, nil))
 }
 
 func addPic(filename string) string {
