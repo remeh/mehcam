@@ -26,10 +26,10 @@ var config struct {
 	Frequency int
 	// minimum distance to consider motion
 	Dist uint64
-	// yo api key
-	YoApiKey string
-	// yo username to push
-	Yo string
+	// Pushover api key
+	PoApiKey string
+	// Pushover push to push
+	PoUser string
 	// addr to listen on. E.g. ':8080'
 	Addr string
 	// base link is the base of link for notification.
@@ -81,7 +81,7 @@ func main() {
 			}
 
 			// send notification in a goroutine
-			if len(config.YoApiKey) != 0 && len(config.Yo) != 0 && len(config.Addr) != 0 {
+			if len(config.PoApiKey) != 0 && len(config.PoUser) != 0 && len(config.Addr) != 0 {
 				id := addPic(filepath)
 				go send(id)
 			}
@@ -105,9 +105,9 @@ func readConfig() error {
 		return fmt.Errorf("no url or no authorization info provided.")
 	}
 
-	if len(config.YoApiKey) == 0 || len(config.Yo) == 0 ||
+	if len(config.PoApiKey) == 0 || len(config.PoUser) == 0 ||
 		len(config.Addr) == 0 || len(config.BaseLink) == 0 {
-		log.Println("no Yo configuration or addr to listen to, notification disabled")
+		log.Println("no Po configuration or addr to listen to, notification disabled")
 	}
 
 	// output directory must end with a /

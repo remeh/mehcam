@@ -1,13 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 const (
-	YoApiUrl = "https://api.justyo.co/yo/"
+	PoApiUrl = "https://api.pushover.net/1/messages.json"
 )
 
 // send uses the JustYo API to send a push notification to my phone
@@ -18,11 +20,15 @@ func send(id string) {
 	}
 
 	values := url.Values{}
-	values.Add("api_token", config.YoApiKey)
-	values.Add("username", config.Yo)
-	values.Add("link", config.BaseLink+"?f="+id)
+	values.Add("token", config.PoApiKey)
+	values.Add("user", config.PoUser)
+	values.Add("title", "Motion detection")
+	// TODO(remy): use the time from the main
+	values.Add("message", fmt.Sprintf("Motion detected at %s", time.Now().String()))
+	values.Add("url", config.BaseLink+"?f="+id)
+	values.Add("url_title", "Open picture")
 
-	resp, err := http.PostForm(YoApiUrl, values)
+	resp, err := http.PostForm(PoApiUrl, values)
 	if err != nil {
 		log.Printf("error while sending the notification: %v", err)
 		return
