@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -12,9 +12,9 @@ const (
 
 // send uses the JustYo API to send a push notification to my phone
 // with a link to the serve image using its unique ID.
-func send(id string) error {
+func send(id string) {
 	if len(id) == 0 {
-		return nil
+		return
 	}
 
 	values := url.Values{}
@@ -24,12 +24,11 @@ func send(id string) error {
 
 	resp, err := http.PostForm(YoApiUrl, values)
 	if err != nil {
-		return err
+		log.Println("error while sending the notification: %v", err)
+		return
 	}
 
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("error while sending the notification:", resp.Status)
+		log.Println("error while sending the notification: %v", resp.Status)
 	}
-
-	return nil
 }

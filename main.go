@@ -80,12 +80,10 @@ func main() {
 				log.Println("while writing file:", err)
 			}
 
-			// send notification
+			// send notification in a goroutine
 			if len(config.YoApiKey) != 0 && len(config.Yo) != 0 && len(config.Addr) != 0 {
 				id := addPic(filepath)
-				if err = send(id); err != nil {
-					log.Println("during push notification:", err)
-				}
+				go send(id)
 			}
 		}
 
