@@ -10,10 +10,8 @@ const (
 	YoApiUrl = "https://api.justyo.co/yo/"
 )
 
-// send uses the JustYo API to send
-// a push notification to my phone
-// with a link to the serve image using
-// its ID.
+// send uses the JustYo API to send a push notification to my phone
+// with a link to the serve image using its unique ID.
 func send(id string) error {
 	if len(id) == 0 {
 		return nil
@@ -22,7 +20,7 @@ func send(id string) error {
 	values := url.Values{}
 	values.Add("api_token", config.YoApiKey)
 	values.Add("username", config.Yo)
-	values.Add("link", config.BaseLink+"?f="+id) // TODO(remy):
+	values.Add("link", config.BaseLink+"?f="+id)
 
 	resp, err := http.PostForm(YoApiUrl, values)
 	if err != nil {

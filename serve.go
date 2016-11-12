@@ -11,7 +11,7 @@ import (
 // idsChar are the chars used to generate an ID.
 const idsChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// TODO(remy): document this.
+// mapping from an unique ID to the actual filepath on the disk.
 var mapping map[string]string = make(map[string]string)
 
 // serve creates an HTTP server listening
@@ -45,6 +45,8 @@ func addPic(filename string) string {
 
 // ----------------------
 
+// picHandler resolves the given file ID using the map mapping
+// to read the actual image from fs and to serve it.
 type picHandler struct{}
 
 func (p picHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
