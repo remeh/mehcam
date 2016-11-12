@@ -32,7 +32,7 @@ func serve() {
 
 func addPic(filename string) string {
 	// generate an random ID
-	id := make([]byte, 32)
+	id := make([]byte, 64)
 	for i := range id {
 		id[i] = idsChar[rand.Intn(len(idsChar))]
 	}
@@ -48,9 +48,9 @@ func addPic(filename string) string {
 type picHandler struct{}
 
 func (p picHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
 
-	filename := r.Header.Get("f")
+	r.ParseForm()
+	filename := r.Form.Get("f")
 	filepath, exists := mapping[filename]
 
 	// unknown image
