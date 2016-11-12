@@ -83,7 +83,7 @@ func main() {
 			// send notification in a goroutine
 			if len(config.PoApiKey) != 0 && len(config.PoUser) != 0 && len(config.Addr) != 0 {
 				id := addPic(filepath)
-				go send(id)
+				go send(t, id)
 			}
 		}
 
