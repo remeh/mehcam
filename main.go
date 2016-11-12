@@ -26,8 +26,8 @@ var config struct {
 	Frequency int
 	// minimum distance to consider motion
 	Dist uint64
-	// Pushover api key
-	PoApiKey string
+	// Pushover token
+	PoToken string
 	// Pushover push to push
 	PoUser string
 	// addr to listen on. E.g. ':8080'
@@ -81,7 +81,7 @@ func main() {
 			}
 
 			// send notification in a goroutine
-			if len(config.PoApiKey) != 0 && len(config.PoUser) != 0 && len(config.Addr) != 0 {
+			if len(config.PoToken) != 0 && len(config.PoUser) != 0 && len(config.Addr) != 0 {
 				id := addPic(filepath)
 				go send(t, id)
 			}
@@ -105,7 +105,7 @@ func readConfig() error {
 		return fmt.Errorf("no url or no authorization info provided.")
 	}
 
-	if len(config.PoApiKey) == 0 || len(config.PoUser) == 0 ||
+	if len(config.PoToken) == 0 || len(config.PoUser) == 0 ||
 		len(config.Addr) == 0 || len(config.BaseLink) == 0 {
 		log.Println("no Po configuration or addr to listen to, notification disabled")
 	}

@@ -20,7 +20,7 @@ func send(t time.Time, id string) {
 	}
 
 	values := url.Values{}
-	values.Add("token", config.PoApiKey)
+	values.Add("token", config.PoToken)
 	values.Add("user", config.PoUser)
 	values.Add("title", "Motion detection")
 	values.Add("message", fmt.Sprintf("Motion detected at %s", t.Format(time.ANSIC)))
