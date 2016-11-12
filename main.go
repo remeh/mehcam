@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -35,7 +36,7 @@ var env struct {
 func main() {
 
 	if err := readParams(); err != nil {
-		fmt.Println("error: can't read mandatory params:", err)
+		log.Println("error: can't read mandatory params:", err)
 		os.Exit(1)
 	}
 
@@ -58,7 +59,7 @@ func main() {
 		// retrieve the current img and its hash
 		currHash, currImg, err = current()
 		if err != nil {
-			fmt.Println("can't retrieve hash:", err)
+			log.Println("can't retrieve hash:", err)
 		}
 
 		// compute the distance between previous image and the current one
@@ -67,16 +68,16 @@ func main() {
 			filepath := env.out + filename(t)
 
 			// write the file
-			fmt.Println(time.Now(), "detected a distance:", dist)
+			log.Println("detected a distance:", dist)
 			if err = ioutil.WriteFile(filepath, currImg, 0644); err != nil {
-				fmt.Println("while writing file:", err)
+				log.Println("while writing file:", err)
 			}
 
 			// send notification
 			if len(env.yo_api_key) != 0 && len(env.yo) != 0 && len(env.addr) != 0 {
 				id := addPic(filepath)
 				if err = send(id); err != nil {
-					fmt.Println("during push notification:", err)
+					log.Println("during push notification:", err)
 				}
 			}
 		}
@@ -104,7 +105,7 @@ func readParams() error {
 	}
 
 	if len(env.yo_api_key) == 0 || len(env.yo) == 0 || len(env.addr) == 0 {
-		fmt.Println("no Yo configuration or addr to listen to, notification disabled")
+		log.Println("no Yo configuration or addr to listen to, notification disabled")
 	}
 
 	// output directory
@@ -117,12 +118,12 @@ func readParams() error {
 	// ----------------------
 
 	if env.duration, err = time.ParseDuration(os.Getenv("DURATION")); err != nil {
-		fmt.Println("warning: can't read DURATION env var. Fallback on 1s")
+		log.Println("warning: can't read DURATION env var. Fallback on 1s")
 		env.duration = time.Second
 	}
 
 	if env.dist, err = strconv.ParseUint(os.Getenv("DIST"), 10, 64); err != nil {
-		fmt.Println("warning: can't read DIST env var. Fallback on 10")
+		log.Println("warning: can't read DIST env var. Fallback on 10")
 		env.dist = 10
 	}
 
