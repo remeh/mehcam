@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "hqDDDpue/5363luidNMBS8z8eJU=",
+			"path": "github.com/BurntSushi/toml",
+			"revision": "99064174e013895bbd9b025c31100bd1d9b590ca",
+			"revisionTime": "2016-07-17T15:07:09Z"
+		},
+		{
 			"checksumSHA1": "+/wjXHgD0HOn6KLsSB33LtfQuAc=",
 			"path": "github.com/jteeuwen/imghash",
 			"revision": "6afea89d4c0e16db11fbe1411ebac8df543f41a7",
