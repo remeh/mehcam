@@ -15,15 +15,15 @@ import (
 
 // get queries the cam webserver for the image.
 // It provides authentification through an HTTP
-// header set in the env.
+// header set in the config.
 func get() ([]byte, error) {
-	req, err := http.NewRequest("GET", env.url, nil)
+	req, err := http.NewRequest("GET", config.Url, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	// Basic Authentication
-	req.SetBasicAuth(env.login, env.password)
+	req.SetBasicAuth(config.Login, config.Password)
 
 	var resp *http.Response
 	if resp, err = http.DefaultClient.Do(req); err != nil {

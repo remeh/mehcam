@@ -24,7 +24,7 @@ func serve() {
 
 	// create the http server
 	s := &http.Server{
-		Addr:    env.addr,
+		Addr:    config.Addr,
 		Handler: picHandler{},
 	}
 	log.Fatal(s.ListenAndServe())

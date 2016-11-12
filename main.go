@@ -5,32 +5,38 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"strconv"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/jteeuwen/imghash"
 )
 
-// env contains the configuration for the
+// config contains the configuration for the
 // execution of the app.
-var env struct {
+// It is read from the "mehcam.conf" file.
+var config struct {
 	// camera auth
-	login    string
-	password string
+	Login    string
+	Password string
 	// camera url
-	url string
+	Url string
 	// output directory
-	out string
-	// fetch frequency
-	duration time.Duration
+	Out string
+	// fetch frequency (in seconds)
+	Frequency int
 	// minimum distance to consider motion
-	dist uint64
+	Dist uint64
 	// yo api key
-	yo_api_key string
+	YoApiKey string
 	// yo username to push
-	yo string
+	Yo string
 	// addr to listen on. E.g. ':8080'
-	addr string
+	Addr string
+	// base link is the base of link for notification.
+	// E.g. http://10.0.0.5:8000
+	// This way, the link sent in the push will be:
+	// http://10.0.0.5:8000/?f=AbCdEfGhIjKlMnOpqRTstVuWxZaBcDEf
+	BaseLink string
 }
 
 func main() {
@@ -46,10 +52,11 @@ func main() {
 	var lastImg, currImg []byte
 	var err error
 
-	ticker := time.NewTicker(env.duration)
+	duration, _ := time.ParseDuration(fmt.Sprintf("%ds", config.Frequency))
+	ticker := time.NewTicker(duration)
 
 	// start the web server
-	if len(env.addr) > 0 {
+	if len(config.Addr) > 0 {
 		go serve()
 	}
 
@@ -64,8 +71,8 @@ func main() {
 
 		// compute the distance between previous image and the current one
 		dist := imghash.Distance(lastHash, currHash)
-		if dist > env.dist && lastImg != nil {
-			filepath := env.out + filename(t)
+		if dist > config.Dist && lastImg != nil {
+			filepath := config.Out + filename(t)
 
 			// write the file
 			log.Println("detected a distance:", dist)
@@ -74,7 +81,7 @@ func main() {
 			}
 
 			// send notification
-			if len(env.yo_api_key) != 0 && len(env.yo) != 0 && len(env.addr) != 0 {
+			if len(config.YoApiKey) != 0 && len(config.Yo) != 0 && len(config.Addr) != 0 {
 				id := addPic(filepath)
 				if err = send(id); err != nil {
 					log.Println("during push notification:", err)
@@ -87,44 +94,36 @@ func main() {
 	}
 }
 
-// readConfig reads in the execution environment for some configuration
+// readConfig reads in the configuration file to set the config var.
 func readConfig() error {
-	var err error
 
-	// authorization and webserver url
+	// read the configuration file
+	if _, err := toml.DecodeFile("mehcam.conf", &config); err != nil {
+		return fmt.Errorf("while reading mehcam.conf: %v", err)
+	}
 
-	env.login = os.Getenv("LOGIN")
-	env.password = os.Getenv("PASSWORD")
-	env.url = os.Getenv("URL")
-	env.yo_api_key = os.Getenv("YO_API_KEY")
-	env.yo = os.Getenv("YO")
-	env.addr = os.Getenv("ADDR")
-
-	if len(env.login) == 0 || len(env.url) == 0 {
+	// test some read values
+	if len(config.Login) == 0 || len(config.Url) == 0 {
 		return fmt.Errorf("no url or no authorization info provided.")
 	}
 
-	if len(env.yo_api_key) == 0 || len(env.yo) == 0 || len(env.addr) == 0 {
+	if len(config.YoApiKey) == 0 || len(config.Yo) == 0 ||
+		len(config.Addr) == 0 || len(config.BaseLink) == 0 {
 		log.Println("no Yo configuration or addr to listen to, notification disabled")
 	}
 
-	// output directory
+	// output directory must end with a /
 
-	env.out = os.Getenv("OUTPUT")
-	if len(env.out) > 0 && env.out[len(env.out)-1] != '/' {
-		env.out += "/"
+	if len(config.Out) > 0 && config.Out[len(config.Out)-1] != '/' {
+		config.Out += "/"
 	}
 
-	// ----------------------
-
-	if env.duration, err = time.ParseDuration(os.Getenv("DURATION")); err != nil {
-		log.Println("warning: can't read DURATION env var. Fallback on 1s")
-		env.duration = time.Second
+	if len(config.BaseLink) > 0 && config.BaseLink[len(config.BaseLink)-1] != '/' {
+		config.BaseLink += "/"
 	}
 
-	if env.dist, err = strconv.ParseUint(os.Getenv("DIST"), 10, 64); err != nil {
-		log.Println("warning: can't read DIST env var. Fallback on 10")
-		env.dist = 10
+	if config.Frequency == 0 {
+		config.Frequency = 5
 	}
 
 	return nil

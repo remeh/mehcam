@@ -20,9 +20,9 @@ func send(id string) error {
 	}
 
 	values := url.Values{}
-	values.Add("api_token", env.yo_api_key)
-	values.Add("username", env.yo)
-	values.Add("link", "http://"+env.addr+"/?f="+id) // TODO(remy):
+	values.Add("api_token", config.YoApiKey)
+	values.Add("username", config.Yo)
+	values.Add("link", config.BaseLink+"?f="+id) // TODO(remy):
 
 	resp, err := http.PostForm(YoApiUrl, values)
 	if err != nil {
