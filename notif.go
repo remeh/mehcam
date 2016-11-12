@@ -24,11 +24,11 @@ func send(id string) {
 
 	resp, err := http.PostForm(YoApiUrl, values)
 	if err != nil {
-		log.Println("error while sending the notification: %v", err)
+		log.Printf("error while sending the notification: %v", err)
 		return
 	}
 
 	if resp.StatusCode != 200 {
-		log.Println("error while sending the notification: %v", resp.Status)
+		log.Printf("error while sending the notification: %v", resp.Status)
 	}
 }
