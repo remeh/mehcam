@@ -27,6 +27,8 @@ func serve() {
 	log.Fatal(http.ListenAndServe(config.Addr, nil))
 }
 
+// addPic adds a filename indexed by a generated
+// unique ID to the mapping map.
 func addPic(filename string) string {
 	// generate a random ID
 	id := make([]byte, 64)
