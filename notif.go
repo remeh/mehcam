@@ -23,7 +23,7 @@ func send(t time.Time, id string) {
 	values.Add("token", config.PoToken)
 	values.Add("user", config.PoUser)
 	values.Add("title", "Motion detection")
-	values.Add("message", fmt.Sprintf("Motion detected at %s", t.Format(time.ANSIC)))
+	values.Add("message", fmt.Sprintf("Motion detected %s", t.Format(time.ANSIC)))
 	values.Add("url", config.BaseLink+"?f="+id)
 	values.Add("url_title", "Open picture")
 	values.Add("sound", "gamelan")
